@@ -15,8 +15,6 @@ const connection = mysql.createConnection({
 connection.connect((err) => {
     if (err) throw err;
     console.log('Kết nối database thành công!');
-
-    // Kiểm tra xem bảng "user" đã tồn tại trong cơ sở dữ liệu "mdc_test" hay chưa
     connection.query(`
         SELECT * FROM information_schema.tables 
         WHERE table_schema = 'mdc_test' 
@@ -27,7 +25,6 @@ connection.connect((err) => {
             console.log('Bảng "user" đã tồn tại trong cơ sở dữ liệu "mdc_test"');
             startServer();
         } else {
-            // Nếu bảng chưa tồn tại, tạo bảng và chèn dữ liệu
             createTableAndInsertData();
         }
     });
