@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
 });
 
 connection.connect((err) => {
-    if (err) throw err;
+    if (err) throw err; 
     console.log('Kết nối database thành công!');
     connection.query(`
         SELECT * FROM information_schema.tables 
