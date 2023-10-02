@@ -51,20 +51,27 @@ function startServer() {
     app.post('/login', (req, res) => {
         const { username, password } = req.body;
 
-        connection.query('SELECT * FROM user WHERE username = ? AND password = ?', [username, password], (err, result) => {
+        connection.query('SELECT * FROM user WHERE username = ?', [username], (err, result) => {
             if (err) throw err;
 
             if (result.length > 0) {
                 const userId = result[0].id;
 
-                connection.query('UPDATE user SET loggedIn = 1, loggedAt = NOW() WHERE id = ?', [userId], (err, result) => {
-                    if (err) throw err;
-                    console.log('Cập nhật trạng thái đăng nhập thành công!');
-                    res.json({
-                        result: 'success',
-                        userId: userId
+                if (result[0].password === password) {
+                    connection.query('UPDATE user SET loggedIn = 1, loggedAt = NOW() WHERE id = ?', [userId], (err, result) => {
+                        if (err) throw err;
+                        console.log('Cập nhật trạng thái đăng nhập thành công!');
+                        res.json({
+                            result: 'success',
+                            userId: userId
+                        });
                     });
-                });
+                } else {
+                    res.json({
+                        result: 'failed',
+                        userId: null
+                    });
+                }
             } else {
                 res.json({
                     result: 'failed',
@@ -78,6 +85,7 @@ function startServer() {
         console.log('Server đang lắng nghe trên cổng 4000');
     });
 }
+
 
 function generateRandomUsername() {
     const characters = 'abcdefghijklmnopqrstuvwxyz';
